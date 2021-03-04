@@ -1,0 +1,74 @@
+Option Explicit
+
+Sub get_filename()
+    Dim pathName As String
+    Dim fileName As String
+    Dim i As Long
+    Dim j As Long
+    Dim k As Long
+    Dim maxRow As Long
+    Dim split As String
+    
+    
+    pathName = "C:\Users\cheer\OneDrive\デスクトップ\練習\"
+    
+    fileName = Dir(pathName & "*.*")
+    
+    i = 1
+    Do While fileName <> ""
+        Cells(i, 1) = fileName
+        i = i + 1
+        fileName = Dir()
+    Loop
+    
+    maxRow = Cells(Rows.Count, 1).End(xlUp).Row
+
+    For j = 1 To maxRow
+        split = FindNumberRegExp(Cells(j, 1))
+        Cells(j, 2) = split
+    Next
+    
+    Range("A1").CurrentRegion.Sort key1:=Range("B1"), order1:=xlAscending, Header:=xlNo
+End Sub
+
+'// 引数1：対象文字列
+'// 引数2：検索結果
+Function FindNumberRegExp(s)
+    Dim reg As New RegExp   '// 正規表現クラスオブジェクト
+    
+    
+    '// 検索条件＝数字以外を抽出
+    reg.Pattern = "[^0-9]"
+    '// 文字列の最後まで検索する
+    reg.Global = True
+    '// 指定セルの数字以外の文字を空文字に置き換える
+    FindNumberRegExp = reg.Replace(s, "")
+End Function
+
+
+Sub rename_fileName()
+    Dim i As Long, j As Long
+    Dim pathName As String
+    Dim maxRow As Long
+    Dim oldFile As String
+    Dim newFile As String
+        
+    pathName = "C:\Users\cheer\OneDrive\デスクトップ\練習\"
+
+    
+   
+    maxRow = Cells(Rows.Count, 1).End(xlUp).Row
+    j = 1
+    For i = 1 To maxRow
+        Cells(i, 3) = Cells(i, 2) & "-" & Format(Date, "yyyymmdd") & Mid(Cells(9, 1), InStr(Cells(9, 1), "."), 5)
+        
+    Next i
+    
+    For i = 1 To maxRow
+        oldFile = pathName & Cells(i, "A")
+        newFile = pathName & Cells(i, "C")
+        Name oldFile As newFile
+    Next
+            
+    
+End Sub
