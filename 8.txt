@@ -1,0 +1,30 @@
+Sub ex3()
+    Dim i As Long
+    Dim j As Long
+    Dim maxRow As Long
+    Dim maxCol As Long
+    Dim total As Long
+    
+    maxRow = Cells(Rows.Count, 2).End(xlUp).Row
+    maxCol = Cells(2, Columns.Count).End(xlToLeft).Column
+    
+    For i = 2 To maxRow
+        For j = 2 To maxCol
+            total = total + Cells(i, j)
+        Next
+        Cells(i, 8) = total
+        total = 0
+    Next
+    
+    
+    For i = 2 To maxRow
+        For j = 2 To maxCol
+            If (Cells(i, j) < 50) Then Exit For
+        Next
+        If (Cells(i, 8) >= 350) Then
+                Cells(i, 7) = "合格"
+        End If
+    Next
+    
+    Range("H:H").Delete
+End Sub
