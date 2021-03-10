@@ -1,0 +1,66 @@
+Option Explicit
+
+Sub 暗算アプリ()
+    Dim n1 As Long
+    Dim n2 As Long
+    Dim opeNum As Long
+    Dim ans As Long
+    Dim ans2 As Long
+    Dim cnt As Long
+    Dim ope() As Variant
+    ope = Array("+", "-", "*", "/")
+    
+    Randomize
+    
+    cnt = 1
+    Do While cnt <> 10
+        
+        opeNum = opeRnd()
+        n1 = rnd1()
+        n2 = rnd2()
+        
+        ans2 = Application.InputBox(prompt:=cnt & "問目" & vbLf & n1 & ope(opeNum) & n2, Title:="暗算問題", Default:=0, Type:=1)
+        
+        If opeNum = 0 Then
+            ans = n1 + n2
+        ElseIf opeNum = 1 Then
+            ans = n1 - n2
+        ElseIf opeNum = 2 Then
+            ans = n1 * n2
+        ElseIf opeNum = 3 Then
+            ans = n1 / n2
+        End If
+        
+        Dim correct As Long: correct = 0
+        If ans = ans2 Then
+            MsgBox "正解"
+            correct = correct + 1
+        Else
+            MsgBox "間違い"
+        End If
+        
+        cnt = cnt + 1
+    Loop
+    
+    Select Case correct
+        Case 0: MsgBox "うわぁぁぁぁ"
+        Case Is < 5: MsgBox "そっか"
+        Case Is < 7: MsgBox "やった!"
+        Case Else: MsgBox "ウホッ！"
+    End Select
+End Sub
+
+Function rnd1() As Long
+    Randomize
+    rnd1 = Int((10 - 1 + 1) * rnd() + 1)
+End Function
+
+Function rnd2() As Long
+    Randomize
+    rnd2 = Int((10 - 1 + 1) * rnd() + 1)
+End Function
+
+Function opeRnd() As Long
+    Randomize
+    opeRnd = Int((3 - 1 + 1) * rnd() + 1)
+End Function
