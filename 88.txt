@@ -1,0 +1,75 @@
+Sub ノック88()
+    Dim i As Long
+    Dim j As Long
+    Dim wsABC As Worksheet: Set wsABC = Worksheets("クロスABC")
+    Dim wsMasta As Worksheet: Set wsMasta = Worksheets("商品マスタ")
+    Dim wsData As Worksheet: Set wsData = Worksheets("data")
+    Dim wsDataR As Range
+    Dim wsMastaR As Range
+    Dim wsABCRng As Range
+    Dim wsDatamr As Long
+    Dim wsABCR As Long
+    Dim total1 As Double
+    Dim total2 As Double
+    Dim subtotal1 As Double
+    Dim subtotal2 As Double
+    
+        
+    wsDatamr = wsData.Cells(Rows.Count, 1).End(xlUp).Row
+    
+    Set wsDataR = wsData.Range("A1").CurrentRegion
+    wsDataR.Offset(1, 0).Resize(, 1).Copy wsABC.Range("A2")
+    wsDataR.Offset(1, 1).Resize(, 1).Copy wsABC.Range("C2")
+    
+    Set wsMastaR = wsMasta.Range("A1").CurrentRegion
+    
+    With wsABC
+        For i = 2 To .Cells(.Rows.Count, 1).End(xlUp).Row
+            On Error GoTo myErr
+            .Cells(i, 2) = WorksheetFunction.VLookup(.Cells(i, 1), wsMastaR, 2, False)
+            .Cells(i, 4) = WorksheetFunction.VLookup(.Cells(i, 1), wsMastaR, 3, False)
+            .Cells(i, 5) = WorksheetFunction.VLookup(.Cells(i, 1), wsMastaR, 4, False)
+myErr:
+            Err.Clear
+            Resume Next
+        Next
+        
+        For i = 2 To .Cells(.Rows.Count, 1).End(xlUp).Row
+            Cells(i, 6) = Cells(i, 4) * Cells(i, 3)
+            Cells(i, 7) = Cells(i, 5) * Cells(i, 3)
+            Cells(i, 8) = Cells(i, 7) - Cells(i, 6)
+        Next
+        
+        total1 = 0
+        total2 = 0
+        subtotal1 = WorksheetFunction.sum(Range("G2", Range("G2").End(xlDown)))
+        subtotal2 = WorksheetFunction.sum(Range("H2", Range("H2").End(xlDown)))
+        For i = 2 To .Cells(.Rows.Count, 1).End(xlUp).Row
+                total1 = total1 + .Cells(i, 7)
+            Select Case total1 / subtotal1
+                Case Is <= 0.5
+                    .Cells(i, 10) = "A"
+                Case Is <= 0.9
+                    .Cells(i, 10) = "B"
+                Case Else
+                    .Cells(i, 10) = "C"
+            End Select
+        Next
+          
+        For i = 2 To .Cells(.Rows.Count, 1).End(xlUp).Row
+            total2 = total2 + .Cells(i, 8)
+            Select Case total2 / subtotal2
+                Case Is <= 0.5
+                    .Cells(i, 9) = "A"
+                Case Is <= 0.9
+                    .Cells(i, 9) = "B"
+                Case Else
+                    .Cells(i, 9) = "C"
+            End Select
+        Next
+        
+        Range("J2").Sort key1:=Columns(8), order1:=xlDescending, Header:=xlNo
+        Range("I2").Sort key1:=Columns(7), order1:=xlDescending, Header:=xlNo
+    End With
+    
+End Sub
