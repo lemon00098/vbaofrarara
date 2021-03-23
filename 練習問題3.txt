@@ -1,0 +1,26 @@
+Sub 練習3()
+    Dim i As Long
+    Dim j As Long
+    Dim maxRow As Long
+    Dim maxCol As Long
+    Dim ws As Worksheet
+    
+    Set ws = Worksheets("練習3")
+    
+    maxRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    maxCol = ws.Cells(1, Columns.Count).End(xlToLeft).Column
+    
+    Dim arr() As Long
+    ReDim arr(maxRow - 1, maxCol - 1) As Long
+    
+    With ws
+        For i = 2 To maxRow
+            For j = 2 To maxCol
+                Dim m As Long
+                m = .Cells(i, 1) * .Cells(1, j)
+                arr(i - 2, j - 2) = m
+            Next
+        Next
+        .Cells(2, "B").Resize(UBound(arr), maxCol - 1) = arr
+    End With
+End Sub
