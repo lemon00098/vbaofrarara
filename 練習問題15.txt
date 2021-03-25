@@ -1,0 +1,26 @@
+Sub ex15()
+    Dim myVal
+    Dim i As Long, j As Long, k As Long
+    Dim goukei As Long
+    Dim sh1 As Worksheet
+    Dim sh2 As Worksheet
+        Set sh1 = Worksheets("練習15")
+        Set sh2 = Worksheets("練習15_回答")
+        ' ---元データを配列に格納
+        myVal = sh1.Range("A2:C190").Value
+        ' ---条件一致データを合計する
+        
+        For i = 2 To 19
+            For j = 2 To 5
+                goukei = 0
+                For k = 1 To UBound(myVal)
+                    If myVal(k, 1) = sh2.Cells(1, j).Value And myVal(k, 2) = sh2.Cells(i, 1).Value Then
+                        goukei = goukei + myVal(k, 3)
+                    End If
+                Next k
+                sh2.Cells(i, j).Value = goukei
+            Next j
+        Next i
+        
+        Set sh1 = Nothing
+End Sub
