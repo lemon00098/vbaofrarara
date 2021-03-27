@@ -1,0 +1,30 @@
+Sub ex15_2()
+    Dim myDic As Object, myKey, myItem
+    Dim myVal, myVal2, myVal3
+    Dim i As Long, j As Long
+    Dim sh1 As Worksheet
+        Set myDic = CreateObject("Scripting.Dictionary")
+        Set sh1 = Worksheets("練習15")
+        ' ---元データを配列に格納
+        myVal = sh1.Range("A2:C190").Value
+        ' ---myDicへデータを格納
+        For i = 1 To UBound(myVal)
+            myVal2 = myVal(i, 1) & "_" & myVal(i, 2)
+            If Not myVal2 = "_" Then
+                If Not myDic.exists(myVal2) Then
+                    myDic.Add myVal2, myVal(i, 3)
+                Else
+                    myDic(myVal2) = myDic(myVal2) + myVal(i, 3)
+                End If
+            End If
+        Next
+        ' ---Key,Itemの書き出し
+        For i = 2 To 19
+            For j = 2 To 5
+                Cells(i, j).Value = myDic(Cells(1, j).Value & "_" & Cells(i, 1).Value)
+            Next j
+        Next i
+
+        Set myDic = Nothing
+        Set sh1 = Nothing
+End Sub
