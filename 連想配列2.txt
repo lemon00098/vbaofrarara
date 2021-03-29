@@ -1,0 +1,83 @@
+Option Explicit
+
+Type ex
+    mise As String
+    d As String
+    beer As Long
+    eda As Long
+    noodle As Long
+End Type
+
+Sub Rensou2()
+    Dim dic As Object
+    Dim i As Long
+    Dim data
+    Dim n As Long
+    Dim m As Long
+    Dim c() As ex
+    Dim keys
+    
+    Set dic = CreateObject("Scripting.Dictionary")
+    
+    data = Sheets("Sheet1").Range("A1").CurrentRegion
+    
+    For i = 2 To UBound(data)
+        If Not dic.exists(data(i, 2)) Then
+            'keyとitemを追加 itemが格納場所
+            dic.Add data(i, 2), n
+            
+            ReDim Preserve c(n)
+            c(n).mise = data(i, 2)
+            c(n).beer = data(i, 3)
+            c(n).eda = data(i, 4)
+            c(n).noodle = data(i, 5)
+            
+            '割引
+            If data(i, 6) <> "" Then c(n).d = data(i, 1)
+            
+            n = n + 1
+            
+        Else
+            '保存場所の値を格納
+            m = dic(data(i, 2))
+            
+            c(m).beer = c(m).beer + data(i, 3)
+            c(m).eda = c(m).eda + data(i, 4)
+            c(m).noodle = c(m).noodle + data(i, 5)
+            
+            '割引
+            If data(i, 6) <> "" Then
+                If c(m).d = "" Then
+                    c(m).d = data(i, 1)
+                Else
+                    c(m).d = c(m).d & vbCrLf & data(i, 1)
+                End If
+            End If
+        End If
+    Next
+    
+    With Sheets("Sheet2")
+        .Activate
+        .Cells.ClearContents
+        
+        .Range("A1") = "お店"
+        .Range("B1") = "割引"
+        .Range("C1") = "ビール売上金額"
+        .Range("D1") = "枝豆売上金額"
+        .Range("E1") = "ラーメン売上金額"
+        
+        For i = LBound(c) To UBound(c)
+            .Cells(i + 2, 1) = c(i).mise
+            .Cells(i + 2, 2) = c(i).d
+            .Cells(i + 2, 3) = c(i).beer
+            .Cells(i + 2, 4) = c(i).eda
+            .Cells(i + 2, 5) = c(i).noodle
+        Next
+        
+        'お店で並び替え&罫線
+        With .Range("A1").CurrentRegion
+            .Sort key1:=.Offset(, 0), order1:=xlAscending, Header:=xlYes
+            .Borders.LineStyle = xlContinuous
+        End With
+    End With
+End Sub
