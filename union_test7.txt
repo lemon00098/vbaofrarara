@@ -1,0 +1,22 @@
+Sub union_test7()
+    Dim i As Long
+    Dim target_cell As Range
+    
+    For i = 1 To 6
+        If InStr(Cells(i, 1).Value, "藤") > 0 Then
+            If target_cell Is Nothing Then
+                Set target_cell = Range(Cells(i, 1), Cells(i, 2))
+            Else
+                Set target_cell = Union(target_cell, Range(Cells(i, 1), Cells(i, 2)))
+            End If
+        End If
+    Next
+    
+    If Not target_cell Is Nothing Then
+        '範囲をグラフにする
+        With Sheets("Sheet7").Shapes.AddChart.Chart
+            .ChartType = xlColumnClustered
+            .SetSourceData target_cell
+        End With
+    End If
+End Sub
